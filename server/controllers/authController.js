@@ -1,7 +1,7 @@
 import User from "../models/user.js"
 import bcryptjs from 'bcryptjs'
-// import { errorHandler } from "../middlewares/errorHandler.js"
 import { validateRegister } from "../helpers/auth.js"
+import jwt from 'jsonwebtoken'
 
 export const signup = async (req, res, next) => {
    try {
@@ -11,14 +11,14 @@ export const signup = async (req, res, next) => {
          return res.status(400).json(errors)
       }
       const existing = await User.findOne({ email })
-       if (existing) {
+      if (existing) {
          return res.status(409).json({ message: "User already exists... Go to Sign in" })
-       }
-       const usernameExisting = await User.findOne({ username })
-       if (usernameExisting) {
+      }
+      const usernameExisting = await User.findOne({ username })
+      if (usernameExisting) {
          return res.status(409).json({ message: "Username already exists..." })
-       }
-   
+      }
+
       const hashedPassword = bcryptjs.hashSync(password, 10)
       const newUser = new User({ username, email, password: hashedPassword })
       await newUser.save()
@@ -26,7 +26,29 @@ export const signup = async (req, res, next) => {
    } catch (err) {
       console.log(err)
       return res
-        .status(500)
-        .json({ message: "Something went wrong. Please try again later" })
-    }
+         .status(500)
+         .json({ message: "Something went wrong. Please try again later" })
    }
+}
+
+export const signin = async (req, res, next) => {
+   try {
+     const { email, password } = req.body;
+     console.log(email)
+     const existingUser = await User.findOne({ email:email });
+     console.log(existingUser)
+     if (!existingUser) {
+       return res.status(409).json({ message: "User not Found. Go to Sign Up." });
+     }
+     const validPassword = bcryptjs.compareSync(password,existingUser.password)
+     if(!validPassword){
+      return res.status(409).json({message:"Invalid password!!!"})
+     }
+     const token = jwt.sign({id:existingUser._id},process.env.JWT_SECRET)
+     const {password:pass,...rest} = existingUser._doc
+     res.cookie('access-token',token,{httpOnly:true}).status(200).json(rest)
+   } catch (err) {
+     console.error(err);
+     return res.status(500).json({ message: "Internal Server Error" });
+   }
+ };
