@@ -7,11 +7,11 @@ const rootReducer = combineReducers({ user: useReducer });
 
 const persistConfig = {
     key: 'root',
-    storage, // Corrected the variable name here
+    storage, 
     version: 1,
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer); // Corrected the variable name here
+const persistedReducer = persistReducer(persistConfig, rootReducer); 
 
 export const store = configureStore({
     reducer: persistedReducer,
