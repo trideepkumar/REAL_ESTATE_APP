@@ -22,25 +22,34 @@ export function SignIn() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    dispatch(signInStart()); 
-
-    axiosInstance
-      .post("/auth/signin", formData)
-      .then((res) => {
-        console.log(res.data);
-        if (res.status === 200) {
-          dispatch(signInSuccess(res.data)); 
-          navigate('/');
-        }
-      })
-      .catch((error) => {
-        dispatch(signInFailure(error.response.data.message)); 
-        return;
-      });
+  
+    dispatch(signInStart());
+  
+    try {
+      const response = await axiosInstance.post("/auth/signin", formData);
+  
+      console.log("response",response.cookie);
+      if (response.status === 200) {
+        console.log(response.cookie)
+        dispatch(signInSuccess(response.data));
+        navigate('/');
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Server responded with an error:", error.response.data);
+        dispatch(signInFailure(error.response.data.message));
+      } else if (error.request) {
+        console.error("No response received from the server:", error.request);
+        dispatch(signInFailure("No response received from the server."));
+      } else {
+        console.error("Error setting up the request:", error.message);
+        dispatch(signInFailure("Error setting up the request."));
+      }
+    }
   };
+  
 
   return (
     <div className="p-3 max-w-lg mx-auto">

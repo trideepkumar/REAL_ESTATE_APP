@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken'
 
 export const  verifyUser = (req,res,next)=>{
-    console.log(req.cookies.access_token)
+
+    console.log("req.cookies",req.body)
+    console.log("req.headers",req.headers)
     const token = req.cookies.access_token
     if(!token){
        return res.status(404).send('Unauthorized user ,cookie not found in the backend!')
