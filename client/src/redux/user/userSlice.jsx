@@ -3,6 +3,7 @@
 
 const initialState = {
     currentUser:null,
+    token: null,
     error:null,
     loading:false,
 }
@@ -23,13 +24,18 @@ const userSlice = createSlice({
             state.error = action.payload
             state.loading = false
         },
+        setCookie: (state, action) => {
+            state.token = action.payload
+            state.loading = false
+            state.error = null;
+        },
         updateUserStart :(state)=>{
             state.loading= true
         },
-        updateUserSuccess:(state,action)=>{
-            state.currentUser = action.payload
-            state.loading = false
-            state.error= null
+        updateUserSuccess: (state, action) => {
+            state.currentUser = action.payload;
+            state.loading = false;
+            state.error = null;
         },
         updateUserFailure:(state,action)=>{
             state.error = action.payload
@@ -38,6 +44,6 @@ const userSlice = createSlice({
     }
 })
 
-export const {signInFailure,signInStart,signInSuccess,updateUserFailure,updateUserStart,updateUserSuccess} = userSlice.actions
+export const {signInFailure,signInStart,signInSuccess,updateUserFailure,updateUserStart,updateUserSuccess,setCookie} = userSlice.actions
 
 export default userSlice.reducer

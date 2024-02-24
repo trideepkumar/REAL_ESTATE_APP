@@ -33,7 +33,7 @@ export default function Header() {
       <Link to="/profile" className="group text-sky-600 transition duration-300 relative">
   {currentUser ? (
     <>    
-    <img className="rounded-full h-7 w-7 object-cover" src={currentUser.avatar} alt="profile" />   
+    <img className="rounded-full h-7 w-7 object-cover" src={currentUser.user.avatar} alt="profile" />   
      </>
   ) : (
     <>

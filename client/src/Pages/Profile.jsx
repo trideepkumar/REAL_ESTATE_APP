@@ -12,6 +12,7 @@ import {
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
+  setCookie
 } from "../redux/user/userSlice.jsx";
 import axiosInstance from "../api/axiosInstance.jsx";
 
@@ -67,22 +68,27 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      console.log("hello doc.cookie",document )
-
-
+      console.log("token here",currentUser.token)
+      const token = currentUser.token
       const res = await axiosInstance.post(
-        `/user/update/${currentUser._id}`,
+        `/user/update/${currentUser.user._id}`,
         formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
-      
-      const data = await res.json();
-      console.log("data", data);
-
-      if (data.success === false) {
-        dispatch(updateUserFailure(data.message));
-        return;
+      console.log("hello world")
+      if (res.status === 200) {
+        const token = res.headers['set-cookie'][0].split(';')[0].split('=')[1];
+        console.log(token)
+        dispatch(setCookie(token))
+        dispatch(updateUserSuccess(res.data));
+        }
+      else {
+        dispatch(updateUserFailure(res.data.message));
       }
-      dispatch(updateUserSuccess(data));
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
@@ -102,7 +108,7 @@ export default function Profile() {
         <img
           onClick={() => fileRef.current.click()}
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
-          src={formData?.avatar || currentUser.avatar}
+          src={formData?.avatar || currentUser.user.avatar}
           alt=""
         />
         <p className="text-center">
@@ -126,7 +132,7 @@ export default function Profile() {
           id="username"
           placeholder="username"
           className="border p-3  rounded-lg"
-          defaultValue={currentUser.username}
+          defaultValue={currentUser.user.username}
           onChange={handleChange}
         />
         <input
@@ -134,7 +140,7 @@ export default function Profile() {
           id="email"
           placeholder="email "
           className="border p-3  rounded-lg"
-          defaultValue={currentUser.email}
+          defaultValue={currentUser.user.email}
           onChange={handleChange}
         />
         <input

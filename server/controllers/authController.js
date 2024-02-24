@@ -44,9 +44,13 @@ export const signin = async (req, res, next) => {
       }
       const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET)
       const { password: pass, ...rest } = existingUser._doc
-      res.cookie('access_token', token, { expires: new Date(Date.now() + 900000), httpOnly: true })
+      const user = {
+         user: rest,
+         token: token,
+       };
+      res.cookie('token', token, { expires: new Date(Date.now() + 900000), httpOnly: false,secure:true })
       .status(200)
-      .json(rest)
+      .json(user)
    } catch (err) {
       console.error(err);
       return res.status(500).json({ message: "Internal Server Error" });

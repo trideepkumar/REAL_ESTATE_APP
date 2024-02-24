@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from '../api/axiosInstance';
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import axiosInstance from "../api/axiosInstance";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
+// import { useCookies } from "react-cookie";
+import Cookies from 'js-cookie';
 
 export function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  // const [cookies, setCookie] = useCookies(["auth-token"]);
 
   const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -24,17 +31,18 @@ export function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    dispatch(signInStart());
-  
+    dispatch(signInStart())
     try {
-      const response = await axiosInstance.post("/auth/signin", formData);
-  
-      console.log("response",response.cookie);
+      const response = await axiosInstance.post("/auth/signin", formData, { credentials: 'include' });
       if (response.status === 200) {
-        console.log(response.cookie)
+        console.log(response.data)
+        const token = response.data.token
+        const setCookie = (token) => {
+          Cookies.set('access_token', token, { expires: 150 / (24 * 600) }); 
+        };        
+        setCookie(token)  
         dispatch(signInSuccess(response.data));
-        navigate('/');
+        navigate("/");
       }
     } catch (error) {
       if (error.response) {
@@ -49,7 +57,6 @@ export function SignIn() {
       }
     }
   };
-  
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -77,9 +84,9 @@ export function SignIn() {
           type="submit"
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          {loading ? 'Loading...' : 'Sign In'}
+          {loading ? "Loading..." : "Sign In"}
         </button>
-        <OAuth/>
+        <OAuth />
       </form>
 
       <div className="flex gap-2 mt-5">
