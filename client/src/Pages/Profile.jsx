@@ -68,8 +68,19 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      console.log("token here",currentUser.token)
-      const token = currentUser.token
+      function getCookieValue(cookieName) {
+        const cookie = document.cookie
+          .split(';')
+          .map(cookie => cookie.trim())
+          .find(cookie => cookie.startsWith(`${cookieName}=`));
+      
+        return cookie ? cookie.substring(cookieName.length + 1) : null;
+      }
+            const accessTokenValue = getCookieValue('access_token');
+      console.log(accessTokenValue);
+      
+      const token = accessTokenValue
+
       const res = await axiosInstance.post(
         `/user/update/${currentUser.user._id}`,
         formData,
@@ -79,11 +90,9 @@ export default function Profile() {
           }
         }
       );
-      console.log("hello world")
       if (res.status === 200) {
-        const token = res.headers['set-cookie'][0].split(';')[0].split('=')[1];
-        console.log(token)
-        dispatch(setCookie(token))
+        console.log("hello world")
+        console.log(document.cookie)
         dispatch(updateUserSuccess(res.data));
         }
       else {

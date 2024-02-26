@@ -38,7 +38,7 @@ export function SignIn() {
         console.log(response.data)
         const token = response.data.token
         const setCookie = (token) => {
-          Cookies.set('access_token', token, { expires: 150 / (24 * 600) }); 
+          Cookies.set('access_token', token, { expires: 7 }); 
         };        
         setCookie(token)  
         dispatch(signInSuccess(response.data));

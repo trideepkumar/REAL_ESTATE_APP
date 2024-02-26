@@ -3,7 +3,6 @@
 
 const initialState = {
     currentUser:null,
-    token: null,
     error:null,
     loading:false,
 }
@@ -33,6 +32,7 @@ const userSlice = createSlice({
             state.loading= true
         },
         updateUserSuccess: (state, action) => {
+            console.log("updating in  the redux")
             state.currentUser = action.payload;
             state.loading = false;
             state.error = null;
