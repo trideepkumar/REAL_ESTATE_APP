@@ -12,12 +12,11 @@ import {
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
-  setCookie
 } from "../redux/user/userSlice.jsx";
 import axiosInstance from "../api/axiosInstance.jsx";
 
 export default function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,loading,error } = useSelector((state) => state.user);
 
   const fileRef = useRef(null);
   const dispatch = useDispatch();
@@ -70,32 +69,31 @@ export default function Profile() {
       dispatch(updateUserStart());
       function getCookieValue(cookieName) {
         const cookie = document.cookie
-          .split(';')
-          .map(cookie => cookie.trim())
-          .find(cookie => cookie.startsWith(`${cookieName}=`));
-      
+          .split(";")
+          .map((cookie) => cookie.trim())
+          .find((cookie) => cookie.startsWith(`${cookieName}=`));
+
         return cookie ? cookie.substring(cookieName.length + 1) : null;
       }
-            const accessTokenValue = getCookieValue('access_token');
+      const accessTokenValue = getCookieValue("access_token");
       console.log(accessTokenValue);
-      
-      const token = accessTokenValue
+
+      const token = accessTokenValue;
 
       const res = await axiosInstance.post(
         `/user/update/${currentUser.user._id}`,
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       if (res.status === 200) {
-        console.log("hello world")
-        console.log(document.cookie)
+        console.log("hello world");
+        console.log(document.cookie);
         dispatch(updateUserSuccess(res.data));
-        }
-      else {
+      } else {
         dispatch(updateUserFailure(res.data.message));
       }
     } catch (error) {
@@ -153,21 +151,22 @@ export default function Profile() {
           onChange={handleChange}
         />
         <input
-          type="text"
+          type="password"
           id="password"
           placeholder="password"
           className="border p-3  rounded-lg"
-          value="************"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
-          update
+        <button disabled={loading} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
+          {loading ? 'loading' : 'update'}
         </button>
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer"> Delete account </span>
         <span className="text-red-700 cursor-pointer"> sign out </span>
       </div>
+      <p className="text-red-700 mt-5">{error ? error : ''}</p>
     </div>
+
   );
 }

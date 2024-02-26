@@ -34,8 +34,9 @@ const userSlice = createSlice({
         updateUserSuccess: (state, action) => {
             console.log("updating in  the redux")
             state.currentUser = action.payload;
-            state.loading = false;
             state.error = null;
+            state.loading = false;
+            
         },
         updateUserFailure:(state,action)=>{
             state.error = action.payload
