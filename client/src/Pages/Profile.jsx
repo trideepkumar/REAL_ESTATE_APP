@@ -24,6 +24,7 @@ export default function Profile() {
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [successUpdate,setSuccessUpdate] = useState(false)
 
   console.log(formData);
 
@@ -93,6 +94,7 @@ export default function Profile() {
         console.log("hello world");
         console.log(document.cookie);
         dispatch(updateUserSuccess(res.data));
+        setSuccessUpdate(true)
       } else {
         dispatch(updateUserFailure(res.data.message));
       }
@@ -166,6 +168,7 @@ export default function Profile() {
         <span className="text-red-700 cursor-pointer"> sign out </span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ''}</p>
+      <p className="text-green-700 mt-5 text-center">{successUpdate ? 'Profile Updated Successfully !!' : ''}</p>
     </div>
 
   );
