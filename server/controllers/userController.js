@@ -37,3 +37,18 @@ export const updateUser = async (req, res) => {
             .json({ message: "Something went wrong. Please try again later" })
     }
 }
+
+export const deleteUser = async(req,res)=>{
+    if (req.user.id !== req.params.id) {
+        res.status(400).send('User can delete only their own account!')
+    }
+    try{
+        await User.findByIdAndDelete(req.params.id)
+        res.clearCookie('access_token');
+        res.status(200).json('User Deleted Successfully!')
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: "Something went wrong in deleting User. Please try again later" })
+    }
+}

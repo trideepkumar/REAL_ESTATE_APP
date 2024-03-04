@@ -89,3 +89,13 @@ export const google = async (req, res, next) => {
 
    }
 }
+
+export const signout = async (req,res) => {
+   try{
+      
+      res.status(200).clearCookie('access_token')
+   }catch (err) {
+         console.error(err);
+         return res.status(500).json({ message: "Internal Server Error" });
+      }
+}
