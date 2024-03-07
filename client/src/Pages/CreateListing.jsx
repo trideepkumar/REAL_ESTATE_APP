@@ -1,10 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
+import {app} from '../Firebase/Firebase.jsx'
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+
 
 export default function CreateListing() {
+   
+   const [files,setFiles] = useState([])
+   const [formData,setFormData] = useState({
+    imageUrls : []
+   })
+   const [imageuploadError,setImageuploadError] = useState(false)
+
+   console.log("formData",formData)
+
+   const handleImage =   (e) => {
+        e.preventDefault()
+        if(files.length > 0 && files.length < 7){
+             const promises = []
+
+             for(let i=0; i< files.length;i++){
+              promises.push(storeImage(files[i]))
+             }
+
+             Promise.all(promises).then((urls)=>{
+              setFormData({ ...formData, imageUrls:formData.imageUrls.concat(urls)})
+              setImageuploadError(false)
+             }).catch(err){
+              setImageuploadError('0-6 images maximum')
+             }
+        }
+   }
+
+   const storeImage = async(file)=>{
+          return new Promise ((resolve,reject)=>{
+            const storage = getStorage(app )
+            const fileName = new Date().getTime() + file.name
+            const storageRef = ref(storage,fileName)
+            const uploadTask =  uploadBytesResumable(storageRef,file)
+            uploadTask.on(
+              "state_changed",
+              (snapshot)=>{
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                console.log(`${progress}% uploaded`)
+              },
+              (error)=>{
+                reject(error)
+              },
+              () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                  resolve(downloadURL)
+                })
+              }
+            )
+          })
+   }
+
   return (
     <main className="p-3 max-w-4xl mx-auto ">
       <h1 className="text-3xl  font-semibold text-center my-7">Create List </h1>
       <form className="flex flex-col sm:flex-row gap-4" >
+
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
@@ -107,8 +167,10 @@ export default function CreateListing() {
             </div>
           </div>
         </div>
-        <div className="gap-4 rounded w-full flex flex-col flex-1 mx-3">
+
+        <div className="gap-4 rounded w-full flex flex-col flex-1 m-1">
           <input
+            onChange={(e)=>setFiles(e.target.files)}
             type="file"
             id="images"
             accept="image/*"
@@ -117,17 +179,17 @@ export default function CreateListing() {
             required
           />
           <div className="">
-            <p className="font-semibold">
+            <p className="font-semibold m-5">
               Upload Images{" "}
               <span className="font-normal ml-2 text-xs text-gray-400 ">
                 (maximum 6 images is to be uploaded)
               </span>
             </p>
           </div>
-          <button className="p-3 text-green-700 border border-gray-400 rounded uppercase hover:shadow-md hover:bg-gray-200 disabled:opacity-80">
+          <button type="button" onClick={handleImage} className="p-3 m-5 text-green-700 border border-gray-400 rounded uppercase hover:shadow-md hover:bg-gray-200 disabled:opacity-80">
             Upload
           </button>
-          <button className="p-3 bg-blue-300 text-gray-900 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">Create Listing</button>
+          <button className="p-3 m-5 bg-blue-300 text-gray-900 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">Create Listing</button>
 
         </div>
 
