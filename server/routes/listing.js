@@ -4,7 +4,7 @@ import { verifyUser } from '../middlewares/verifyUser.js';
 
 const router = express.Router()
 
-router.post('/create',verifyUser,createList)
+router.post('/create',createList)
 
 
 export default router

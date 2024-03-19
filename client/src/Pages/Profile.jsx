@@ -223,6 +223,7 @@ export default function Profile() {
             type="password"
             id="password"
             placeholder="password"
+            // value='Reset Password'
             className="border p-3  rounded-lg"
             onChange={handleChange}
           />
