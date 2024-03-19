@@ -1,5 +1,6 @@
 import bcryptjs from 'bcryptjs'
 import User from '../models/user.js'
+import Listing from '../models/Listing.js'
 
 
 export const test = (req, res) => {
@@ -13,7 +14,7 @@ export const updateUser = async (req, res) => {
     }
     try {
         console.log(req.body)
-            //   const hashedPassword = bcryptjs.hashSync(password, 10)
+        //   const hashedPassword = bcryptjs.hashSync(password, 10)
 
         const updateduser = await User.findByIdAndUpdate(req.params.id, {
             $set: {
@@ -22,13 +23,13 @@ export const updateUser = async (req, res) => {
                 password: req.body.password,
                 avatar: req.body.avatar
             }
-        },{new:true})
+        }, { new: true })
 
-        console.log("updateduser",updateduser)
+        console.log("updateduser", updateduser)
 
-        const {password, ...rest} = updateduser._doc
+        const { password, ...rest } = updateduser._doc
         const user = {
-            user:rest,
+            user: rest,
         }
         res.status(200).json(user)
     } catch (err) {
@@ -38,11 +39,11 @@ export const updateUser = async (req, res) => {
     }
 }
 
-export const deleteUser = async(req,res)=>{
+export const deleteUser = async (req, res) => {
     if (req.user.id !== req.params.id) {
         res.status(400).send('User can delete only their own account!')
     }
-    try{
+    try {
         await User.findByIdAndDelete(req.params.id)
         res.clearCookie('access_token');
         res.status(200).json('User Deleted Successfully!')
@@ -51,4 +52,19 @@ export const deleteUser = async(req,res)=>{
             .status(500)
             .json({ message: "Something went wrong in deleting User. Please try again later" })
     }
+}
+
+export const getUserlisting = async (req, res) => {
+    if (req.user.id !== req.params.id) {
+        try {
+            const listing = await Listing.find({ userRef: req.params.id })
+            res.status(200).json(listing)
+        } catch (err) {
+            console.log(err)
+            res.status(401).json({ message: "Something went wrong in deleting User. Please try again later" })
+        }
+    } else {
+        res.status(401).send('Cannot Authenticate the user !')
+    }
+
 }
