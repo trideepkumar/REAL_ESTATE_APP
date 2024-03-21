@@ -15,7 +15,7 @@ export default function CreateListing() {
   const navigate = useNavigate()
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
-    imageUrls: [],
+    images: [],
     name: "",
     description: "",
     address: "",
@@ -49,7 +49,7 @@ export default function CreateListing() {
         .then((urls) => {
           setFormData({
             ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
+            images: formData.images.concat(urls),
           });
           setImageuploadError(false);
           setLoading(false);
@@ -127,7 +127,7 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.imageUrls.length < 1) {
+      if (formData.images.length < 1) {
         return setError("Upload atleast 1 image !");
       }
       if (formData.regularPrice < formData.discountPrice) {
@@ -361,8 +361,8 @@ export default function CreateListing() {
           <p className="text-red-500 text-center font-extralight text-sm">
             {imageuploadError && imageuploadError}
           </p>
-          {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url, index) => (
+          {formData.images.length > 0 &&
+            formData.images.map((url, index) => (
               <div
                 key={url}
                 className="flex justify-between p-3 border items-center"

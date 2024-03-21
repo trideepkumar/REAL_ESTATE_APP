@@ -33,6 +33,8 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [successUpdate, setSuccessUpdate] = useState(false);
+  const [showListingError, setShowlistingError] = useState(false);
+  const [listings, setListings] = useState([]);
 
   console.log(formData);
 
@@ -168,6 +170,41 @@ export default function Profile() {
     }
   };
 
+  const handleListing = async () => {
+    try {
+      function getCookieValue(cookieName) {
+        const cookie = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim())
+          .find((cookie) => cookie.startsWith(`${cookieName}=`));
+
+        return cookie ? cookie.substring(cookieName.length + 1) : null;
+      }
+      const accessTokenValue = getCookieValue("access_token");
+      console.log(accessTokenValue);
+
+      const token = accessTokenValue;
+      const res = await axiosInstance.get(
+        `user/listings/${currentUser.user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.status === 200) {
+        setShowlistingError(false);
+        const data = res.data;
+        setListings(data);
+        console.log(data);
+      } else {
+        setShowlistingError(res.message);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
       {" "}
@@ -248,18 +285,61 @@ export default function Profile() {
         <p className="text-green-700 mt-5 text-center">
           {successUpdate ? "Profile Updated Successfully !!" : ""}
         </p>
-
-      
       </div>
-
-      <div className="p-2 max-w-lg mx-auto">
-      <Link
+      <div className="p-2 max-w-lg mx-auto ">
+        <Link
           to={"/create-listing"}
           className="bg-green-600 flex justify-center align-center text-white  p-3 rounded-lg uppercase text-center hover:opacity-100 hover:text-green-300"
         >
-          
           Create Your List To Sell
         </Link>
+      </div>
+      <div>
+        <button
+          onClick={handleListing}
+          className="w-full text-green-700 border bg-green-100 bold p-2 m-auto "
+        >
+          Show Your Sell Listings
+        </button>
+
+        {listings && listings.length > 0 && (
+          <div>
+            <h1 className="text-center my-7 text-2xl   font-semibold"> Your Ad's Below.</h1>
+            {listings.map((list) => (
+              <div
+                key={list._id}
+                className="border rounded-lg p-3 flex flex-col sm:flex-row justify-between items-center m-5 gap-4 sm:gap-6"
+              >
+                <Link to={`/listing/${list._id}`} className="flex-shrink-0">
+                  <img
+                    src={list.images[0]}
+                    alt="listing cover image"
+                    className="h-20 w-20 object-contain rounded-lg"
+                  />
+                </Link>
+                <Link
+                  className="flex-2 text-slate-700 font-semibold overflow-scroll truncate hover:underline"
+                  to={`/listing/${list._id}`}
+                  style={{ maxWidth: "calc(100% - 160px)" }}
+                >
+                  <p className="">{list.name}</p>
+                </Link>
+                <div className="flex justify-end sm:justify-start">
+                  <button className="text-red-700 border p-2 rounded-lg border-red-400 mx-2">
+                    DELETE
+                  </button>
+                  <button className="text-blue-400 border p-2 rounded-lg border-blue-400 mx-2 px-5">
+                    EDIT
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p className="text-red-400 mt-5 text-center">
+          {showListingError ? "Error in showing Listings !" : ""}
+        </p>
       </div>
     </div>
   );
