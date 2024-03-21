@@ -9,4 +9,5 @@ router.post('/update/:id', verifyUser, updateUser)
 router.delete('/deleteUser/:id', verifyUser, deleteUser)
 router.get('/listings/:id', verifyUser, getUserlisting)
 
+
 export default router

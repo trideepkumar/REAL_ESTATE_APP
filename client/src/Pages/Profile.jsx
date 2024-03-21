@@ -21,6 +21,7 @@ import {
 } from "../redux/user/userSlice.jsx";
 import axiosInstance from "../api/axiosInstance.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import ConfirmationModal from "../components/Modals/ConfirmationModal.jsx";
 
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -35,6 +36,10 @@ export default function Profile() {
   const [successUpdate, setSuccessUpdate] = useState(false);
   const [showListingError, setShowlistingError] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  // const modalRef = useRef(null);
+
 
   console.log(formData);
 
@@ -205,6 +210,47 @@ export default function Profile() {
     }
   };
 
+  const handleDeleteList = async (id) =>{
+       console.log("id",id)
+    try{
+        console.log("handleDeleteLsit")
+        function getCookieValue(cookieName) {
+          const cookie = document.cookie
+            .split(";")
+            .map((cookie) => cookie.trim())
+            .find((cookie) => cookie.startsWith(`${cookieName}=`));
+  
+          return cookie ? cookie.substring(cookieName.length + 1) : null;
+        }
+        const accessTokenValue = getCookieValue("access_token");
+        console.log(accessTokenValue);
+        const token = accessTokenValue;
+        const res = await axiosInstance.delete(`/listing/deleteList/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+        )
+        if(res.status === 200){
+            console.log(res.status)
+            setListings(prevListings => prevListings.filter(listing => listing._id !== id)); 
+            setShowModal(false);
+        }else{
+            console.log("error in deleting list!")
+        }
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const handleDeleteButtonClick = (id) => {
+    setSelectedItemId(id);
+    setShowModal(true);
+  };
+
+
+
   return (
     <div>
       {" "}
@@ -325,7 +371,7 @@ export default function Profile() {
                   <p className="">{list.name}</p>
                 </Link>
                 <div className="flex justify-end sm:justify-start">
-                  <button className="text-red-700 border p-2 rounded-lg border-red-400 mx-2">
+                  <button onClick={()=>handleDeleteButtonClick(list._id)} className="text-red-700 border p-2 rounded-lg border-red-400 mx-2">
                     DELETE
                   </button>
                   <button className="text-blue-400 border p-2 rounded-lg border-blue-400 mx-2 px-5">
@@ -341,6 +387,11 @@ export default function Profile() {
           {showListingError ? "Error in showing Listings !" : ""}
         </p>
       </div>
+      <ConfirmationModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => handleDeleteList(selectedItemId)}
+      />
     </div>
   );
 }
