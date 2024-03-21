@@ -38,10 +38,7 @@ export default function Profile() {
   const [listings, setListings] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  // const modalRef = useRef(null);
 
-
-  console.log(formData);
 
   useEffect(() => {
     if (file) {
@@ -374,9 +371,11 @@ export default function Profile() {
                   <button onClick={()=>handleDeleteButtonClick(list._id)} className="text-red-700 border p-2 rounded-lg border-red-400 mx-2">
                     DELETE
                   </button>
+                  <Link to={`/update-listing/${list._id}`}>
                   <button className="text-blue-400 border p-2 rounded-lg border-blue-400 mx-2 px-5">
                     EDIT
                   </button>
+                  </Link>
                 </div>
               </div>
             ))}

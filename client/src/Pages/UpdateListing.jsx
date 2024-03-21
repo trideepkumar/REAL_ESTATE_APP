@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { app } from "../Firebase/Firebase.jsx";
 import {
   getDownloadURL,
@@ -8,11 +8,12 @@ import {
 } from "firebase/storage";
 import axiosInstance from "../api/axiosInstance.jsx";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateListing() {
+export default function UpdateListing() {
   const { currentUser } = useSelector((state) => state.user);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const params = useParams();
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     images: [],
@@ -31,8 +32,6 @@ export default function CreateListing() {
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState(false);
-
-
 
   const handleImage = (e) => {
     setLoading(true);
@@ -149,7 +148,7 @@ export default function CreateListing() {
 
       const token = accessTokenValue;
       const res = await axiosInstance.post(
-        "/listing/create",
+        `/listing/update/${params.id}`,
         {
           ...formData,
           userRef: currentUser.user._id,
@@ -166,10 +165,10 @@ export default function CreateListing() {
       const data = await res;
       console.log("res res respose", data.status);
       if (data.status === 200) {
-        console.log("data._id",data.data._id)
+        console.log("data._id", data.data._id);
         console.log("listing created succeddfully !!");
         setLoader(false);
-        navigate(`/listing/${data.data._id}`)
+        navigate(`/listing/${data.data._id}`);
       } else {
         setError(data.message);
       }
@@ -180,9 +179,32 @@ export default function CreateListing() {
     }
   };
 
+  const fetchingList = async () => {
+    try {
+      const listId = params.id;
+      console.log("listId:", listId);
+      const res = await axiosInstance.get(`/listing/getList/${listId}`);
+      if (res.status !== 200) {
+        console.log(res.data.message);
+        return;
+      }
+      setFormData(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchingList();
+
+  }, []);
+
   return (
     <main className="p-3 max-w-4xl mx-auto ">
-      <h1 className="text-3xl  font-semibold text-center my-7">Create List </h1>
+      <h1 className="text-3xl  font-semibold text-center my-7 underline">
+        Update Your Ad{" "}
+      </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
@@ -381,8 +403,11 @@ export default function CreateListing() {
                 </button>
               </div>
             ))}
-          <button disabled={loader || loading} className="p-3 m-5 bg-blue-300 text-gray-900 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
-            {loader ? "Posting the ad..." : "Create List"}
+          <button
+            disabled={loader || loading}
+            className="p-3 m-5 bg-blue-300 text-gray-900 rounded-lg uppercase hover:opacity-95 disabled:opacity-70"
+          >
+            {loader ? "Updating the ad..." : "Update Ad"}
           </button>
           {error && (
             <p className="text-red-400 text-center text-sm font-mono">
