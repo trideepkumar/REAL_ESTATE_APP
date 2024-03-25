@@ -164,10 +164,7 @@ export default function CreateListing() {
       console.log("helo ress");
 
       const data = await res;
-      console.log("res res respose", data.status);
       if (data.status === 200) {
-        console.log("data._id",data.data._id)
-        console.log("listing created succeddfully !!");
         setLoader(false);
         navigate(`/listing/${data.data._id}`)
       } else {
