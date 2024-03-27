@@ -2,19 +2,15 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { Link } from "react-router-dom";
 
-const Contact = ({ isOpen, onClose, listing }) => {
+const Contact = ({ isOpen, onClose, onSubmit, listing }) => {
   const [seller, setSeller] = useState(null);
   const [message, setMessage] = useState("");
-  const [close,setClose] = useState(false)
 
   console.log(onClose, "sellerrrrrrrr ");
 
   const handleChange = (event) => {
     setMessage(event.target.value);
   };
-
-
-  
 
   useEffect(() => {
     const fetchSeller = async () => {
@@ -50,7 +46,7 @@ const Contact = ({ isOpen, onClose, listing }) => {
 
   return (
     <>
-      {isOpen && seller && !close &&(
+      {isOpen && seller && (
         <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 z-50">
           {" "}
           <div className="bg-white p-8 rounded-lg">
@@ -79,7 +75,7 @@ const Contact = ({ isOpen, onClose, listing }) => {
               </Link>
 
               <button
-                  onClick={onClose}
+                onClick={onClose}
                 className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
               >
                 Cancel

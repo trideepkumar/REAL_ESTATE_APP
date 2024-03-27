@@ -304,6 +304,7 @@ export default function Profile() {
             id="password"
             placeholder="password"
             // value='Reset Password'
+            disabled={true}
             className="border p-3  rounded-lg"
             onChange={handleChange}
           />

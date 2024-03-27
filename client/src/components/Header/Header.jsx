@@ -8,20 +8,25 @@ export default function Header() {
   const {currentUser} = useSelector((state)=>  state.user)
 
   return (
-    <header className="bg-slate-300 shadow-md">
+    <header className="shadow-md sticky top-0 bg-gray-900 z-10" style={{ backgroundColor: '#363636' }}>
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <h1 className="font-bold text-sm  sm:text-xl flex flex-wrap">
           <span className="text-slate-500">Real</span>
           <span className="text-slate-700">Estate</span>
         </h1>
-        <form className="bg-slate-100 p-3 rounded-lg flex items-center">
+
+        <div className="">
+        <form className=" p-3 rounded-lg flex items-center" style={{background:"#242424"}}>
           <input
             placeholder="search here..."
             className="bg-transparent focus:outline-none w-24 sm:w-64"
           />
           <FaSearch className="text-slate-600" />
         </form>
+        </div>
+       
         <div className="flex gap-4">
+          
       <Link to="/" className="hidden sm:inline group text-sky-600 transition duration-300 relative">
         <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-sky-600 absolute bottom-0 left-0 right-0"></span>
         Home

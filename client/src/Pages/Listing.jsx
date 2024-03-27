@@ -118,7 +118,7 @@ export default function Listing() {
 
   if(contact){
     return(
-      <Contact isOpen={true} listing={listing} />
+      <Contact isOpen={true} listing={listing}  onClose={() => setContact(false)} />
     )
   }
 
