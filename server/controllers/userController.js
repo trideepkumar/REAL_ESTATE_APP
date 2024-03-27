@@ -70,3 +70,18 @@ export const getUserlisting = async (req, res) => {
     }
 
 }
+
+export const getUser = async(req,res) =>{
+    try{
+        const user = await User.findById(req.params.id)
+        if(!user){
+            return res.status(404).json("User not Found !")
+        }
+        const  {password: pass, ...rest } = user._doc
+
+         return res.status(200).json(rest)
+    }catch(err){
+        console.log(err)
+        res.status(401).json({ message: "Something went wrong in deleting User. Please try again later" })
+    }
+}
