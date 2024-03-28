@@ -28,6 +28,7 @@ export default function UpdateListing() {
     offer: false,
     furnished: false,
   });
+  console.log(formData)
   const [imageuploadError, setImageuploadError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);

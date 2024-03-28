@@ -39,7 +39,6 @@ export default function Profile() {
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
 
-
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -199,6 +198,10 @@ export default function Profile() {
         const data = res.data;
         setListings(data);
         console.log(data);
+        window.scrollTo({
+          top: window.innerHeight, 
+          behavior: 'smooth' 
+        });
       } else {
         setShowlistingError(res.message);
       }
@@ -207,52 +210,50 @@ export default function Profile() {
     }
   };
 
-  const handleDeleteList = async (id) =>{
-       console.log("id",id)
-    try{
-        console.log("handleDeleteLsit")
-        function getCookieValue(cookieName) {
-          const cookie = document.cookie
-            .split(";")
-            .map((cookie) => cookie.trim())
-            .find((cookie) => cookie.startsWith(`${cookieName}=`));
-  
-          return cookie ? cookie.substring(cookieName.length + 1) : null;
-        }
-        const accessTokenValue = getCookieValue("access_token");
-        console.log(accessTokenValue);
-        const token = accessTokenValue;
-        const res = await axiosInstance.delete(`/listing/deleteList/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-        )
-        if(res.status === 200){
-            console.log(res.status)
-            setListings(prevListings => prevListings.filter(listing => listing._id !== id)); 
-            setShowModal(false);
-        }else{
-            console.log("error in deleting list!")
-        }
-    }catch(err){
-      console.log(err)
+  const handleDeleteList = async (id) => {
+    console.log("id", id);
+    try {
+      console.log("handleDeleteLsit");
+      function getCookieValue(cookieName) {
+        const cookie = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim())
+          .find((cookie) => cookie.startsWith(`${cookieName}=`));
+
+        return cookie ? cookie.substring(cookieName.length + 1) : null;
+      }
+      const accessTokenValue = getCookieValue("access_token");
+      console.log(accessTokenValue);
+      const token = accessTokenValue;
+      const res = await axiosInstance.delete(`/listing/deleteList/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+        console.log(res.status);
+        setListings((prevListings) =>
+          prevListings.filter((listing) => listing._id !== id)
+        );
+        setShowModal(false);
+      } else {
+        console.log("error in deleting list!");
+      }
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const handleDeleteButtonClick = (id) => {
     setSelectedItemId(id);
     setShowModal(true);
   };
 
-
-
   return (
     <div>
       {" "}
       <div className="p-3 max-w-lg mx-auto">
-        <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
+        <h1 className="text-3xl font-semibold text-center text-white underline my-7">{currentUser.user.username}</h1>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
             onChange={(e) => setFile(e.target.files[0])}
@@ -263,10 +264,11 @@ export default function Profile() {
           />
           <img
             onClick={() => fileRef.current.click()}
-            className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
+            className="rounded-e h-24 w-24 object-cover cursor-pointer self-center mt-2 border border-white p-1"
             src={formData?.avatar || currentUser.user.avatar}
             alt=""
           />
+
           <p className="text-center">
             {fileUploadError ? (
               <span className="text-red-700">
@@ -290,6 +292,7 @@ export default function Profile() {
             className="border p-3  rounded-lg"
             defaultValue={currentUser.user.username}
             onChange={handleChange}
+            style={{ background: "#242424", color: "#9BA3AF" }}
           />
           <input
             type="email"
@@ -298,6 +301,7 @@ export default function Profile() {
             className="border p-3  rounded-lg"
             defaultValue={currentUser.user.email}
             onChange={handleChange}
+            style={{ background: "#242424", color: "#9BA3AF" }}
           />
           <input
             type="password"
@@ -305,22 +309,32 @@ export default function Profile() {
             placeholder="password"
             // value='Reset Password'
             disabled={true}
-            className="border p-3  rounded-lg"
+            className="border p-3  rounded-lg text-white"
             onChange={handleChange}
+            style={{ background: "#242424" }}
           />
           <button
             disabled={loading}
-            className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+            className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95  hover:text-black disabled:opacity-80"
+            style={{ background: "#FF6F12" }}
           >
             {loading ? "loading" : "update"}
           </button>
         </form>
         <div className="flex justify-between mt-5">
-          <span onClick={handleDelete} className="text-red-700 cursor-pointer">
+          <span
+            onClick={handleDelete}
+            className=" cursor-pointer hover:text-red-600"
+            // style={{ color: "#E68282" }}
+          >
             {" "}
             Delete account{" "}
           </span>
-          <span onClick={handleSignout} className="text-red-700 cursor-pointer">
+          <span
+            onClick={handleSignout}
+            className=" cursor-pointe hover:text-red-600"
+            
+          >
             {" "}
             sign out{" "}
           </span>
@@ -333,22 +347,27 @@ export default function Profile() {
       <div className="p-2 max-w-lg mx-auto ">
         <Link
           to={"/create-listing"}
-          className="bg-green-600 flex justify-center align-center text-white  p-3 rounded-lg uppercase text-center hover:opacity-100 hover:text-green-300"
+          className=" flex justify-center align-center text-white  p-3 rounded-lg uppercase text-center hover:opacity-100 hover:text-black"
+          style={{ background: "#E68282" }}
         >
           Create Your List To Sell
         </Link>
-      </div>
-      <div>
         <button
           onClick={handleListing}
-          className="w-full text-green-700 border bg-green-100 bold p-2 m-auto "
+          className="w-full text-white border  bold p-2 my-5 rounded-md "
         >
           Show Your Sell Listings
         </button>
 
+      </div>
+      <div>
+       
         {listings && listings.length > 0 && (
           <div>
-            <h1 className="text-center my-7 text-2xl   font-semibold"> Your Ad's Below.</h1>
+            <h1 className="text-center my-7 text-2xl   font-semibold">
+              {" "}
+              Your Ad's Below.
+            </h1>
             {listings.map((list) => (
               <div
                 key={list._id}
@@ -358,24 +377,27 @@ export default function Profile() {
                   <img
                     src={list.images[0]}
                     alt="listing cover image"
-                    className="h-20 w-20 object-contain rounded-lg"
+                    className="h-20 w-20 object-contain rounded-lg border border-white p-1 "
                   />
                 </Link>
                 <Link
-                  className="flex-2 text-slate-700 font-semibold overflow-scroll truncate hover:underline"
+                  className="flex-2 text-slate-700 font-semibold overflow-scroll truncate hover:underline "
                   to={`/listing/${list._id}`}
                   style={{ maxWidth: "calc(100% - 160px)" }}
                 >
-                  <p className="">{list.name}</p>
+                  <p className="text-white hover:underline">{list.name}</p>
                 </Link>
                 <div className="flex justify-end sm:justify-start">
-                  <button onClick={()=>handleDeleteButtonClick(list._id)} className="text-red-700 border p-2 rounded-lg border-red-400 mx-2">
+                  <button
+                    onClick={() => handleDeleteButtonClick(list._id)}
+                    className="text-red-700 border p-2 rounded-lg border-red-400 mx-2"
+                  >
                     DELETE
                   </button>
                   <Link to={`/update-listing/${list._id}`}>
-                  <button className="text-blue-400 border p-2 rounded-lg border-blue-400 mx-2 px-5">
-                    EDIT
-                  </button>
+                    <button className="text-blue-400 border p-2 rounded-lg border-blue-400 mx-2 px-5">
+                      EDIT
+                    </button>
                   </Link>
                 </div>
               </div>

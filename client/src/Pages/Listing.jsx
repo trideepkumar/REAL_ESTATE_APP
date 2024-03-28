@@ -132,7 +132,12 @@ export default function Listing() {
               width: window.innerWidth <= 768 ? "100vw" : "75vw",
               objectFit: "fill",
               marginTop: window.innerWidth <= 768 ? "0" : "30px",
+              border:"solid 1px white",
+              padding:'2px',
+              boxShadow:'2px 2px 2px 2px',
+              borderRadius:'10px'
             }}
+           
           >
             {listing.images.map((url, index) => (
               <SwiperSlide key={index}>
@@ -140,7 +145,7 @@ export default function Listing() {
                   <img
                     src={url}
                     alt={`Image ${index}`}
-                    className="w-full h-full object-full"
+                    className="w-full h-full object-full rounded-lg"
                     style={{ filter: "brightness(0.8)" }}
                   />
                   <button
@@ -157,12 +162,13 @@ export default function Listing() {
         )}
       </main>
       <div className="flex space-between flex-wrap m-4 justify-center">
-        <div className="border rounded-lg  w-full md:w-2/4 bg-white p-1">
+        <div className="border rounded-lg  w-full md:w-2/4 text-white p-1 shadow-lg" style={{background:'#242424'}}>
           <div>
             <p
-              className="p-3 text-4xl font-black sm:text-thin md:text-4xl text-pretty"
+              className="p-3 text-4xl font-bold text-white sm:text-thin md:text-4xl text-pretty"
               style={{
                 fontStyle: window.innerWidth <= 768 ? "thin" : "normal",
+                color:"#fffff"
               }}
             >
               {listing.name}
@@ -186,7 +192,7 @@ export default function Listing() {
                 })}
               </p>
             </div>
-            <p className=" p-3  font-medium text-wrap underline">Description</p>
+            <p className=" p-3  font-medium text-wrap underline text-white">Description</p>
             <div className="mx-5 text-gray-750 ">
               <ul className="rounded-lg font-medium">
                 <li className="block ">{listing.description}</li>
@@ -198,10 +204,10 @@ export default function Listing() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center  space-y-10 border rounded-lg m-3 text-4xl font-extrabold w-full md:w-1/3 bg-white p-4">
-          <p>₹ {listing.regularPrice} </p>
+        <div className="flex flex-col justify-center  space-y-10 border rounded-lg m-3 text-4xl font-extrabold w-full md:w-1/3 p-4"  style={{background:'#242424'}}>
+          <p className=" text-white">₹ {listing.regularPrice} </p>
           {currentUser.user && listing.userRef !== currentUser.user._id && !contact && (
-          <button onClick={()=>setContact(true)} className="text-black border  font-semibold bg-white rounded-lg border-black mx-2 px-5 py-4 uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm hover:bg-black hover:text-white">
+          <button onClick={()=>setContact(true)} className="text-black border  font-semibold rounded-lg border-black mx-2 px-5 py-4 uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm hover:bg-black hover:text-white"  style={{background:'#FF6F12'}}>
             contact seller via Email
           </button>
           )}
@@ -216,7 +222,7 @@ export default function Listing() {
         {currentUser.user && listing.userRef !== currentUser.user._id && (
           <button
             onClick={handleChatClick}
-            className="w-3/4    text-black border font-semibold  bg-white rounded-lg  border-black mx-2 px-5 py-4  uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm  hover:bg-black hover:text-white"
+            className="w-3/4    text-black border font-semibold  text-white rounded-lg  border-white mx-2 px-5 py-4  uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm  hover:bg-white hover:text-black "
           >
             chat with the seller
           </button>

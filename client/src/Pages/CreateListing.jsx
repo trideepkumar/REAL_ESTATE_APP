@@ -185,13 +185,14 @@ export default function CreateListing() {
           <input
             type="text"
             placeholder="Name"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg "
             id="name"
             maxLength="62"
             minLength="10"
             required
             onChange={handleChange}
             value={formData.name}
+            style={{ background: "#242424", color: "white" }}
           />
           <textarea
             type="text"
@@ -201,6 +202,8 @@ export default function CreateListing() {
             required
             onChange={handleChange}
             value={formData.description}
+            style={{ background: "#242424", color: "white" }}
+
           />
           <input
             type="text"
@@ -212,6 +215,8 @@ export default function CreateListing() {
             required
             onChange={handleChange}
             value={formData.address}
+            style={{ background: "#242424", color: "white" }}
+
           />
           <div className=" flex gap-10 flex-wrap mx-auto">
             <div className="flex gap-2">
@@ -221,6 +226,7 @@ export default function CreateListing() {
                 className="w-4"
                 onChange={handleChange}
                 checked={formData.type === "sale"}
+                style={{ background: "#242424", color: "white" }}
               />
               <span>Sale</span>
             </div>
@@ -231,6 +237,7 @@ export default function CreateListing() {
                 className="w-4"
                 onChange={handleChange}
                 checked={formData.type === "rent"}
+                style={{ background: "#242424", color: "white" }}
               />
               <span>Rent</span>
             </div>
@@ -273,10 +280,11 @@ export default function CreateListing() {
                 id="bedroom"
                 min="1"
                 max="100"
-                className="p-3 rounded-lg"
+                className="border p-3 rounded-lg"
                 required
                 onChange={handleChange}
                 value={formData.bedroom}
+                style={{ background: "#242424", color: "white" }}
               />
               <span>Beds</span>
             </div>
@@ -286,10 +294,12 @@ export default function CreateListing() {
                 id="baths"
                 min="1"
                 max="100"
-                className="p-3 rounded-lg"
+                className="border p-3 rounded-lg"
                 required
                 onChange={handleChange}
                 value={formData.baths}
+                style={{ background: "#242424", color: "white" }}
+
               />
               <span>Baths</span>
             </div>
@@ -299,10 +309,12 @@ export default function CreateListing() {
                 id="regularPrice"
                 min="1000"
                 max="100000000000"
-                className="p-3 rounded-lg"
+                className="border p-3 rounded-lg"
                 required
                 onChange={handleChange}
                 value={formData.regularPrice}
+                style={{ background: "#242424", color: "white" }}
+
               />
               <div className="flex flex-col items-center">
                 <p>Regular Price</p>
@@ -315,10 +327,13 @@ export default function CreateListing() {
                   type="number"
                   id="discountPrice"
                   min="0"
-                  className="p-3 rounded-lg"
+                  className="p-3 rounded-lg border"
                   required
                   onChange={handleChange}
                   value={formData.discountPrice}
+                  style={{ background: "#242424", color: "white" }}
+
+                  
                 />
                 <div className="flex flex-col items-center">
                   <p>Discount Price</p>
@@ -351,7 +366,8 @@ export default function CreateListing() {
             type="button"
             disabled={loading}
             onClick={handleImage}
-            className="p-3 m-5 text-green-700 border border-gray-400 rounded uppercase hover:shadow-md hover:bg-gray-200 disabled:opacity-80"
+            className="p-3 m-5  border border-gray-400 rounded uppercase hover:shadow-md hover:bg-gray-200 disabled:opacity-80"
+            style={{color:"#FF6F12"}}
           >
             {loading ? "loading..." : "upload"}
           </button>
@@ -367,18 +383,18 @@ export default function CreateListing() {
                 <img
                   src={url}
                   alt="list of images"
-                  className="w-20 h-20 object-contain rounded-lg"
+                  className="w-20 h-20 object-contain rounded-lg border border-white p-1"
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(index)}
-                  className="p-3 text-red-500 rounded-lg uppercase hover:opacity-50"
+                  className="p-3 text-red-500 hover:border hover:border-red-800 rounded-lg uppercase hover:opacity-50"
                 >
                   Delete
                 </button>
               </div>
             ))}
-          <button disabled={loader || loading} className="p-3 m-5 bg-blue-300 text-gray-900 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
+          <button disabled={loader || loading} className="p-3 m-5 text-white rounded-lg uppercase hover:opacity-95 hover:text-black disabled:opacity-70" style={{background:"#FF6F12"}}>
             {loader ? "Posting the ad..." : "Create List"}
           </button>
           {error && (
