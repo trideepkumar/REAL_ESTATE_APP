@@ -130,7 +130,7 @@ export default function Listing() {
             navigation
             style={{
               width: window.innerWidth <= 768 ? "100vw" : "75vw",
-              objectFit: "fill",
+              objectFit: "contain",
               marginTop: window.innerWidth <= 768 ? "0" : "30px",
               border:"solid 1px white",
               padding:'2px',
@@ -145,7 +145,7 @@ export default function Listing() {
                   <img
                     src={url}
                     alt={`Image ${index}`}
-                    className="w-full h-full object-full rounded-lg"
+                    className="w-full h-full object-contain rounded-lg"
                     style={{ filter: "brightness(0.8)" }}
                   />
                   <button
