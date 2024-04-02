@@ -11,6 +11,7 @@ import { ShareSocial } from "react-share-social";
 import { FaShare } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import Contact from "../components/Contact/Contact.jsx";
+import Spinner from "../components/Placeholders/Spinner.jsx";
 
 export default function Listing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -65,9 +66,7 @@ export default function Listing() {
 
   if (loading) {
     return (
-      <p className="text-bold text-center flex m-5 items-center justify-center">
-        Loading ...
-      </p>
+     <Spinner/>
     );
   }
 
@@ -207,7 +206,7 @@ export default function Listing() {
         <div className="flex flex-col justify-center  space-y-10 border rounded-lg m-3 text-4xl font-extrabold w-full md:w-1/3 p-4"  style={{background:'#242424'}}>
           <p className=" text-white">₹ {listing.regularPrice} </p>
           {currentUser.user && listing.userRef !== currentUser.user._id && !contact && (
-          <button onClick={()=>setContact(true)} className="text-black border  font-semibold rounded-lg border-black mx-2 px-5 py-4 uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm hover:bg-black hover:text-white"  style={{background:'#FF6F12'}}>
+          <button onClick={()=>setContact(true)} className="text-white border  font-semibold rounded-lg border-white mx-2 px-5 py-4 uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm hover:bg-gray-300 hover:text-orange-500" >
             contact seller via Email
           </button>
           )}
@@ -222,7 +221,7 @@ export default function Listing() {
         {currentUser.user && listing.userRef !== currentUser.user._id && (
           <button
             onClick={handleChatClick}
-            className="w-3/4    text-black border font-semibold  text-white rounded-lg  border-white mx-2 px-5 py-4  uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm  hover:bg-white hover:text-black "
+            className="w-3/4   border font-semibold  text-white rounded-lg  border-white mx-2 px-5 py-4  uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm  hover:bg-white hover:text-black "
           >
             chat with the seller
           </button>
