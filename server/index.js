@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://scrapy-lime.vercel.app/',
   credentials: true, 
 }));
 
