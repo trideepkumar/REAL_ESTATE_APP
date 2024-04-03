@@ -33,7 +33,7 @@ const navigate = useNavigate()
         }
     }
   return (
-    <button onClick={handleGoogleClick} type='button' className='bg-blue-500 text-white p-3 rounded-lg flex items-center justify-center uppercase hover:opacity-95'>
+    <button onClick={handleGoogleClick} type='button' className='bg-gray-600 text-white p-3 rounded-lg flex items-center justify-center uppercase hover:opacity-95'>
       <FontAwesomeIcon icon={faGoogle} className="mr-2" />
       Continue with Google
     </button>
