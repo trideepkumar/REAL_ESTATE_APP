@@ -24,10 +24,7 @@ app.use(cors({
 
 app.set('trust proxy', 1)
 
-
-
 //mongoose connection
-
 mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log("connect to Db suucessfuly!!")
 }).catch((err)=>{
@@ -36,15 +33,13 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 
 app.listen(3000,()=>{console.log('server running at port 3000')})
 
-
-
 app.use('/api/user',userRouter)
 app.use('/api/auth',authRouter)
 app.use('/api/listing',listingRouter)
 app.use('/api/category',category)
 
 
-app.use(express.static(path.join(__dirname,'/client/dist')))
-app.get('*',(req,res) => {
-  res.sendFile(path.join(__dirname,'/client','dist', 'index.html'))
+app.use(express.static(path.join(__dirname, '../client/dist')))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'))
 })
