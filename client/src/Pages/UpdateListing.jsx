@@ -177,20 +177,7 @@ export default function UpdateListing() {
     }
   };
 
-  // const fetchingList = async () => {
-  //   try {
-  //     const listId = params.id;
-  //     console.log("listId:", listId);
-  //     const res = await axiosInstance.get(`/listing/getList/${listId}`);
-  //     if (res.status !== 200) {
-  //       console.log(res.data.message);
-  //       return;
-  //     }
-  //     setFormData(res.data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+ 
   const fetchingList = async () => {
     try {
       const listId = params.id;
@@ -232,7 +219,7 @@ export default function UpdateListing() {
   return (
     <main className="p-3 max-w-4xl mx-auto ">
       <h1 className="text-3xl  font-semibold text-center my-7 underline">
-        Update Your Ad{" "}
+        Update Your Ad
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
