@@ -11,6 +11,10 @@ const listingSchema = new Schema({
         type: String,
         required: true
     },
+    category: {
+        type:String,
+        required: true
+    },
     address: {
         type: String,
         required: true
@@ -21,27 +25,10 @@ const listingSchema = new Schema({
     },
     discountPrice: {
         type: Number,
-        required: true
-    },
-    bathroom: {
-        type: Number,
-        required: true
-    },
-    bedroom: {
-        type: Number,
-        required: true
-    },
-    parking: {
-        type: Boolean,
-        default: false 
-    },
-    furnished: {
-        type: Boolean,
-        default: false 
     },
     type: {
         type: String,
-        required: true,
+        // required: true,
         // enum: ['apartment', 'house', 'condo'] 
     },
     offer: {
@@ -53,9 +40,7 @@ const listingSchema = new Schema({
         required: true
     }],
     userRef: {
-        // type: Schema.Types.ObjectId, 
-        // ref: 'User', 
-        type:String,
+        type: String, 
         required: true
     },
 }, { timestamps: true });

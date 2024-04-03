@@ -11,10 +11,9 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function UpdateListing() {
-
   const { currentUser } = useSelector((state) => state.user);
 
-  const fileRef = useRef(null)
+  const fileRef = useRef(null);
   const navigate = useNavigate();
   const params = useParams();
   const [files, setFiles] = useState([]);
@@ -23,19 +22,27 @@ export default function UpdateListing() {
     name: "",
     description: "",
     address: "",
+    category: "",
     type: "sale",
-    bedroom: 0,
-    bathroom: 0,
     regularPrice: 0,
     discountPrice: 0,
     offer: false,
-    furnished: false,
   });
-  console.log(formData)
+  console.log(formData);
   const [imageuploadError, setImageuploadError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/category/getCategory");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const handleImage = (e) => {
     setLoading(true);
@@ -99,30 +106,17 @@ export default function UpdateListing() {
   };
 
   const handleChange = (e) => {
-    if (e.target.id === "sale" || e.target.id === "rent") {
+    const { id, value, type } = e.target;
+
+    if (type === "number" || type === "text" || type === "textarea") {
       setFormData({
         ...formData,
-        type: e.target.id,
+        [id]: value,
       });
-    }
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "offer"
-    ) {
+    } else if (id === "type" || id === "category") {
       setFormData({
         ...formData,
-        [e.target.id]: e.target.checked,
-      });
-    }
-    if (
-      e.target.type === "number" ||
-      e.target.type === "text" ||
-      e.target.type === "textarea"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
+        [id]: value,
       });
     }
   };
@@ -183,6 +177,20 @@ export default function UpdateListing() {
     }
   };
 
+  // const fetchingList = async () => {
+  //   try {
+  //     const listId = params.id;
+  //     console.log("listId:", listId);
+  //     const res = await axiosInstance.get(`/listing/getList/${listId}`);
+  //     if (res.status !== 200) {
+  //       console.log(res.data.message);
+  //       return;
+  //     }
+  //     setFormData(res.data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
   const fetchingList = async () => {
     try {
       const listId = params.id;
@@ -192,16 +200,33 @@ export default function UpdateListing() {
         console.log(res.data.message);
         return;
       }
-      setFormData(res.data);
+      const {
+        name,
+        description,
+        address,
+        category,
+        type,
+        regularPrice,
+        images,
+      } = res.data;
+      setFormData({
+        ...formData,
+        name,
+        description,
+        address,
+        category,
+        type,
+        regularPrice,
+        images,
+      });
     } catch (err) {
       console.log(err);
     }
   };
-  
 
   useEffect(() => {
     fetchingList();
-
+    fetchCategories();
   }, []);
 
   return (
@@ -214,7 +239,7 @@ export default function UpdateListing() {
           <input
             type="text"
             placeholder="Name"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
             id="name"
             maxLength="62"
             minLength="10"
@@ -225,7 +250,7 @@ export default function UpdateListing() {
           <textarea
             type="text"
             placeholder="description"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
             id="description"
             required
             onChange={handleChange}
@@ -234,7 +259,7 @@ export default function UpdateListing() {
           <input
             type="text"
             placeholder="Adress"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
             id="address"
             maxLength="62"
             minLength="10"
@@ -242,93 +267,40 @@ export default function UpdateListing() {
             onChange={handleChange}
             value={formData.address}
           />
-          <div className=" flex gap-10 flex-wrap mx-auto">
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="sale"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.type === "sale"}
-              />
-              <span>Sale</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="rent"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.type === "rent"}
-              />
-              <span>Rent</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="parking"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.parking}
-              />
-              <span>Parking Spot</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.furnished}
-              />
-              <span>Furnished</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="offer"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.offer}
-              />
-              <span>Offer</span>
-            </div>
-          </div>
+          <select
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
+            id="category"
+            onChange={handleChange}
+            value={formData.category}
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
+            id="type"
+            onChange={handleChange}
+            value={formData.type}
+            required
+          >
+            <option value="sale">Sale</option>
+            <option value="rent">Rent</option>
+          </select>
 
           <div className="flex flex-wrap gap-6 mx-auto">
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="bedroom"
-                min="1"
-                max="100"
-                className="p-3 rounded-lg"
-                required
-                onChange={handleChange}
-                value={formData.bedroom}
-              />
-              <span>Beds</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="baths"
-                min="1"
-                max="100"
-                className="p-3 rounded-lg"
-                required
-                onChange={handleChange}
-                value={formData.baths}
-              />
-              <span>Baths</span>
-            </div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
                 id="regularPrice"
                 min="1000"
                 max="100000000000"
-                className="p-3 rounded-lg"
+                className="p-3 rounded-lg border bg-transparent text-gray-400"
                 required
                 onChange={handleChange}
                 value={formData.regularPrice}
@@ -359,7 +331,14 @@ export default function UpdateListing() {
         </div>
 
         <div className="gap-4 rounded w-full flex flex-col flex-1 m-1">
-        <div onClick={() => fileRef.current.click()} className="cursor-pointer text-gray-400 border p-3 rounded-lg text-center "> Click to upload images</div>
+          <div
+            onClick={() => fileRef.current.click()}
+            className="cursor-pointer text-gray-400 border p-3 rounded-lg text-center "
+          >
+            {" "}
+            Click to upload images
+          </div>
+         
           <input
             onChange={(e) => setFiles(e.target.files)}
             type="file"
@@ -369,8 +348,8 @@ export default function UpdateListing() {
             accept="image/*"
             multiple
             className="border p-3 rounded-lg"
-            required
           />
+
           <div className="">
             <p className="font-semibold m-5">
               Upload Images{" "}
@@ -404,7 +383,7 @@ export default function UpdateListing() {
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(index)}
-                  className="p-3 text-red-500 rounded-lg uppercase hover:opacity-50"
+                  className="p-3 text-red-500 rounded-lg uppercase hover:opacity-50 hover:border hover:border-red-500"
                 >
                   Delete
                 </button>

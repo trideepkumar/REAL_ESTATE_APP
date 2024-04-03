@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { app } from "../Firebase/Firebase.jsx";
 import {
   getDownloadURL,
@@ -19,20 +19,30 @@ export default function CreateListing() {
   const [formData, setFormData] = useState({
     images: [],
     name: "",
+    category:"",
     description: "",
     address: "",
-    type: "sale",
-    bedroom: 0,
-    bathroom: 0,
+    type: "",
     regularPrice: 0,
     discountPrice: 0,
     offer: false,
-    furnished: false,
   });
   const [imageuploadError, setImageuploadError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  console.log(formData);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/category/getCategory");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const handleImage = (e) => {
     setLoading(true);
@@ -95,34 +105,23 @@ export default function CreateListing() {
     });
   };
 
+  
   const handleChange = (e) => {
-    if (e.target.id === "sale" || e.target.id === "rent") {
+    const { id, value, type } = e.target;
+  
+    if (type === "number" || type === "text" || type === "textarea") {
       setFormData({
         ...formData,
-        type: e.target.id,
+        [id]: value,
       });
-    }
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "offer"
-    ) {
+    } else if (id === "type" || id === "category") {
       setFormData({
         ...formData,
-        [e.target.id]: e.target.checked,
-      });
-    }
-    if (
-      e.target.type === "number" ||
-      e.target.type === "text" ||
-      e.target.type === "textarea"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
+        [id]: value,
       });
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -134,6 +133,9 @@ export default function CreateListing() {
         return setError(
           "Discount Price must be lower than the Regular Price !"
         );
+      }
+      if (!formData.category) {
+        return setError("Please select a category !");
       }
       setLoader(true);
       function getCookieValue(cookieName) {
@@ -177,6 +179,10 @@ export default function CreateListing() {
     }
   };
 
+  useEffect(()=>{
+      fetchCategories()
+  },[])
+
   return (
     <main className="p-3 max-w-4xl mx-auto ">
       <h1 className="text-3xl  font-semibold text-center my-7">Create List </h1>
@@ -184,7 +190,7 @@ export default function CreateListing() {
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
-            placeholder="Name"
+            placeholder="Ad's Title"
             className="border p-3 rounded-lg "
             id="name"
             maxLength="62"
@@ -206,7 +212,7 @@ export default function CreateListing() {
           />
           <input
             type="text"
-            placeholder="Adress"
+            placeholder="Your Adress"
             className="border p-3 rounded-lg"
             id="address"
             maxLength="62"
@@ -216,97 +222,40 @@ export default function CreateListing() {
             value={formData.address}
             style={{ background: "#242424", color: "white" }}
           />
-          <div className=" flex gap-10 flex-wrap mx-auto">
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="sale"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.type === "sale"}
-                style={{ background: "#242424", color: "white" }}
-              />
-              <span>Sale</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="rent"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.type === "rent"}
-                style={{ background: "#242424", color: "white" }}
-              />
-              <span>Rent</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="parking"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.parking}
-              />
-              <span>Parking Spot</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.furnished}
-              />
-              <span>Furnished</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="offer"
-                className="w-4"
-                onChange={handleChange}
-                checked={formData.offer}
-              />
-              <span>Offer</span>
-            </div>
-          </div>
+          <select 
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
+            id="category"
+            onChange={handleChange}
+            value={formData.category}
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          
+          <select
+            className="border p-3 rounded-lg bg-transparent text-gray-400"
+            id="type"
+            onChange={handleChange}
+            value={formData.type}
+            required
+          >
+            <option value="sale">Sale</option>
+            <option value="rent">Rent</option>
+          </select>
 
           <div className="flex flex-wrap gap-6 mx-auto">
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="bedroom"
-                min="1"
-                max="100"
-                className="border p-3 rounded-lg"
-                required
-                onChange={handleChange}
-                value={formData.bedroom}
-                style={{ background: "#242424", color: "white" }}
-              />
-              <span>Beds</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="baths"
-                min="1"
-                max="100"
-                className="border p-3 rounded-lg"
-                required
-                onChange={handleChange}
-                value={formData.baths}
-                style={{ background: "#242424", color: "white" }}
-              />
-              <span>Baths</span>
-            </div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
                 id="regularPrice"
                 min="1000"
                 max="100000000000"
-                className="border p-3 rounded-lg"
+                className="border p-3 w-full rounded-lg"
                 required
                 onChange={handleChange}
                 value={formData.regularPrice}
@@ -339,7 +288,13 @@ export default function CreateListing() {
         </div>
 
         <div className="gap-4 rounded w-full flex flex-col flex-1 m-1">
-          <div onClick={() => fileRef.current.click()} className="cursor-pointer text-gray-400 border p-3 rounded-lg text-center "> Click to upload images</div>
+          <div
+            onClick={() => fileRef.current.click()}
+            className="cursor-pointer text-gray-400 border p-3 rounded-lg text-center "
+          >
+            {" "}
+            Click to upload images
+          </div>
           <input
             onChange={(e) => setFiles(e.target.files)}
             type="file"
