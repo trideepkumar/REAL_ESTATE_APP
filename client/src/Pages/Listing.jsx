@@ -221,7 +221,7 @@ export default function Listing() {
         {currentUser.user && listing.userRef !== currentUser.user._id && (
           <button
             onClick={handleChatClick}
-            className="w-3/4   border font-semibold  text-white rounded-lg  border-white mx-2 px-5 py-4  uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm  hover:bg-white hover:text-black "
+            className="w-3/4 my-5  border font-semibold  text-white rounded-lg  border-white mx-2 px-5 py-4  uppercase flex-nowrap xs:text-xs sm:px-3 sm:text-sm  hover:bg-white hover:text-black "
           >
             chat with the seller
           </button>

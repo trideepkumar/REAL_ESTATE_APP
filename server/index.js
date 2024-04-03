@@ -6,6 +6,8 @@ import authRouter from './routes/auth.js'
 import cookieParser from 'cookie-parser'
 import listingRouter from './routes/listing.js'
 import cors from 'cors'
+import category from './routes/category.js'
+
 dotenv.config();
 
 
@@ -38,3 +40,4 @@ app.listen(3000,()=>{console.log('server running at port 3000')})
 app.use('/api/user',userRouter)
 app.use('/api/auth',authRouter)
 app.use('/api/listing',listingRouter)
+app.use('/api/category',category)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { app } from "../Firebase/Firebase.jsx";
 import {
   getDownloadURL,
@@ -11,7 +11,10 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function UpdateListing() {
+
   const { currentUser } = useSelector((state) => state.user);
+
+  const fileRef = useRef(null)
   const navigate = useNavigate();
   const params = useParams();
   const [files, setFiles] = useState([]);
@@ -356,10 +359,13 @@ export default function UpdateListing() {
         </div>
 
         <div className="gap-4 rounded w-full flex flex-col flex-1 m-1">
+        <div onClick={() => fileRef.current.click()} className="cursor-pointer text-gray-400 border p-3 rounded-lg text-center "> Click to upload images</div>
           <input
             onChange={(e) => setFiles(e.target.files)}
             type="file"
             id="images"
+            hidden
+            ref={fileRef}
             accept="image/*"
             multiple
             className="border p-3 rounded-lg"

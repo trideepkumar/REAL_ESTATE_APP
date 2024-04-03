@@ -250,9 +250,8 @@ export default function Profile() {
   };
 
   return (
-    <div>
-      {" "}
-      <div className="p-3 max-w-lg mx-auto">
+    <>
+      <div className="p-3 max-w-lg mx-auto ">
         <h1 className="text-3xl font-semibold text-center text-white underline my-7">{currentUser.user.username}</h1>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
@@ -315,8 +314,7 @@ export default function Profile() {
           />
           <button
             disabled={loading}
-            className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95  hover:text-black disabled:opacity-80"
-            style={{ background: "#FF6F12" }}
+            className=" text-white border rounded-lg p-3 uppercase hover:opacity-95 hover:bg-gray-100  hover:text-black disabled:opacity-80"
           >
             {loading ? "loading" : "update"}
           </button>
@@ -347,14 +345,13 @@ export default function Profile() {
       <div className="p-2 max-w-lg mx-auto ">
         <Link
           to={"/create-listing"}
-          className=" flex justify-center align-center text-white  p-3 rounded-lg uppercase text-center hover:opacity-100 hover:text-black"
-          style={{ background: "#E68282" }}
+          className=" flex justify-center align-center hover:text-white  bg-blue-300   p-3 rounded-lg uppercase text-center hover:opacity-100 text-black"
         >
           Create Your List To Sell
         </Link>
         <button
           onClick={handleListing}
-          className="w-full text-white border  bold p-2 my-5 rounded-md "
+          className="w-full text-white border  bold p-2 my-5 rounded-md hover:bg-gray-100 hover:text-black"
         >
           Show Your Sell Listings
         </button>
@@ -414,6 +411,6 @@ export default function Profile() {
         onClose={() => setShowModal(false)}
         onConfirm={() => handleDeleteList(selectedItemId)}
       />
-    </div>
+    </>
   );
 }

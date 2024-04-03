@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { app } from "../Firebase/Firebase.jsx";
 import {
   getDownloadURL,
@@ -12,7 +12,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
-  const navigate = useNavigate()
+
+  const fileRef = useRef(null);
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     images: [],
@@ -31,8 +33,6 @@ export default function CreateListing() {
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState(false);
-
-
 
   const handleImage = (e) => {
     setLoading(true);
@@ -166,7 +166,7 @@ export default function CreateListing() {
       const data = await res;
       if (data.status === 200) {
         setLoader(false);
-        navigate(`/listing/${data.data._id}`)
+        navigate(`/listing/${data.data._id}`);
       } else {
         setError(data.message);
       }
@@ -203,7 +203,6 @@ export default function CreateListing() {
             onChange={handleChange}
             value={formData.description}
             style={{ background: "#242424", color: "white" }}
-
           />
           <input
             type="text"
@@ -216,7 +215,6 @@ export default function CreateListing() {
             onChange={handleChange}
             value={formData.address}
             style={{ background: "#242424", color: "white" }}
-
           />
           <div className=" flex gap-10 flex-wrap mx-auto">
             <div className="flex gap-2">
@@ -299,7 +297,6 @@ export default function CreateListing() {
                 onChange={handleChange}
                 value={formData.baths}
                 style={{ background: "#242424", color: "white" }}
-
               />
               <span>Baths</span>
             </div>
@@ -314,7 +311,6 @@ export default function CreateListing() {
                 onChange={handleChange}
                 value={formData.regularPrice}
                 style={{ background: "#242424", color: "white" }}
-
               />
               <div className="flex flex-col items-center">
                 <p>Regular Price</p>
@@ -332,8 +328,6 @@ export default function CreateListing() {
                   onChange={handleChange}
                   value={formData.discountPrice}
                   style={{ background: "#242424", color: "white" }}
-
-                  
                 />
                 <div className="flex flex-col items-center">
                   <p>Discount Price</p>
@@ -345,13 +339,16 @@ export default function CreateListing() {
         </div>
 
         <div className="gap-4 rounded w-full flex flex-col flex-1 m-1">
+          <div onClick={() => fileRef.current.click()} className="cursor-pointer text-gray-400 border p-3 rounded-lg text-center "> Click to upload images</div>
           <input
             onChange={(e) => setFiles(e.target.files)}
             type="file"
             id="images"
+            ref={fileRef}
             accept="image/*"
             multiple
-            className="border p-3 rounded-lg"
+            hidden
+            className="border p-3 rounded-lg "
             required
           />
           <div className="">
@@ -366,8 +363,7 @@ export default function CreateListing() {
             type="button"
             disabled={loading}
             onClick={handleImage}
-            className="p-3 m-5  border border-gray-400 rounded uppercase hover:shadow-md hover:bg-gray-200 disabled:opacity-80"
-            style={{color:"#FF6F12"}}
+            className="p-3 m-5  border border-gray-400 text-white hover:text-black rounded uppercase hover:shadow-md hover:bg-gray-200 disabled:opacity-80"
           >
             {loading ? "loading..." : "upload"}
           </button>
@@ -394,7 +390,10 @@ export default function CreateListing() {
                 </button>
               </div>
             ))}
-          <button disabled={loader || loading} className="p-3 m-5 text-white rounded-lg uppercase hover:opacity-95 hover:text-black disabled:opacity-70" style={{background:"#FF6F12"}}>
+          <button
+            disabled={loader || loading}
+            className="p-3 m-5 text-white border hover:bg-white rounded-lg uppercase hover:opacity-95 hover:text-black disabled:opacity-70"
+          >
             {loader ? "Posting the ad..." : "Create List"}
           </button>
           {error && (

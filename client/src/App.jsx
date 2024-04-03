@@ -11,6 +11,7 @@ import CreateListing from './Pages/CreateListing.jsx'
 import UpdateListing from './Pages/updateListing.jsx'
 import Listing from './Pages/Listing.jsx'
 import Search from './Pages/Search.jsx'
+import Footer from './components/Footer/Footer.jsx'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
       <Route path='/update-listing/:id' element={<UpdateListing/>}/>
       </Route>
     </Routes>
+    <Footer/>
     </BrowserRouter>
 
   )

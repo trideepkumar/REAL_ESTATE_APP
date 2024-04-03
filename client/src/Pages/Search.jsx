@@ -48,6 +48,7 @@ export default function Search() {
       const urlParams = new URLSearchParams(window.location.search);
       const res = await axiosInstance.get(`/listing/get?${urlParams}`);
       setListing(res.data);
+    
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -59,7 +60,8 @@ export default function Search() {
   }, [sidebarData]);
 
   return (
-    <div className="flex flex-col md:flex-row ">
+    <>    <div className="flex flex-col md:flex-row ">
+
       <div className="border border-slate-700 rounded-md p-2 m-1 lg:mt-2 border-b-2 shadow-lg sm:border-r-2 sm:w-full md:w-1/4 md:min-h-screen">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div
@@ -112,7 +114,7 @@ export default function Search() {
         </form>
       </div>
 
-      <div className="border w-full m-3 rounded-lg border-slate-700 p-7 flex flex-wrap justify-between">
+      <div className="border w-full m-3  rounded-lg border-slate-700 p-7 flex flex-wrap justify-between">
         {loading ? (
           Array.from({ length: 10 }).map((_, index) => (
             <div
@@ -137,12 +139,15 @@ export default function Search() {
                 className="relative my-1 flex flex-col shadow-md bg-clip-border rounded-xl w-64 card"
                 style={{ background: "#242323" }}
               >
-<div className="relative mx-2 mt-4  hover:scale-105 transition-all  o overflow-hidden bg-clip-border rounded-xl h-36 cursor-pointer hover:cursor-pointer">
-                    <img
-                      src={item.images[0]||"https://as1.ftcdn.net/v2/jpg/02/48/42/64/1000_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg"}
-                      alt="placeholder-image"
-                      className="object-fill w-full h-full"
-                    />
+                <div className="relative mx-2 mt-4  hover:scale-105 transition-all  o overflow-hidden bg-clip-border rounded-xl h-36 cursor-pointer hover:cursor-pointer">
+                  <img
+                    src={
+                      item.images[0] ||
+                      "https://as1.ftcdn.net/v2/jpg/02/48/42/64/1000_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg"
+                    }
+                    alt="placeholder-image"
+                    className="object-fill w-full h-full"
+                  />
                 </div>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-2">
@@ -153,12 +158,10 @@ export default function Search() {
                         </span>
                       )}
                     </p>
-
-                    
                   </div>
                   <p className="block font-sans text-white  text-xl  font-bold antialiased font-xl leading-relaxed ">
-                      ${item.regularPrice}
-                    </p>
+                    ${item.regularPrice}
+                  </p>
                   <div>
                     <p className="font-sans text-xs antialiased font-fa-xs leading-relaxed text-blue-gray-900 flex items-center">
                       {item.address && (
@@ -193,6 +196,10 @@ export default function Search() {
           ))
         )}
       </div>
+
     </div>
+
+    </>
+
   );
 }
